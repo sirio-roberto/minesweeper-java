@@ -17,6 +17,9 @@ public class Main {
         while (!field.isGameOver()) {
             System.out.print("Set/unset mines marks or claim a cell as free: ");
             String[] userInput = scanner.nextLine().split(" ");
+            if (isInvalidInput(userInput, numOfMines)) {
+                continue;
+            }
             int x = Integer.parseInt(userInput[0]);
             int y = Integer.parseInt(userInput[1]);
             String action = userInput[2];
@@ -30,5 +33,27 @@ public class Main {
 
             System.out.println(field.getFoggedField());
         }
+    }
+
+    private static boolean isInvalidInput(String[] userInput, int numOfMines) {
+        if (userInput.length != 3) {
+            System.out.println("User input should contain 3 fields (x, y and action)");
+            return true;
+        }
+        if (!userInput[0].matches("\\d+") || !userInput[1].matches("\\d+")) {
+            System.out.println("The coordinates should be numeric values");
+            return true;
+        }
+        int x = Integer.parseInt(userInput[0]);
+        int y = Integer.parseInt(userInput[1]);
+        if (x < 0 || y < 0 || x > numOfMines || y > numOfMines) {
+            System.out.println("Coordinates should be between allowed range");
+            return true;
+        }
+        if (!("free".equals(userInput[2]) || "mine".equals(userInput[2]))) {
+            System.out.println("Action should be valid: free or mine");
+            return true;
+        }
+        return false;
     }
 }
