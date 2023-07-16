@@ -103,13 +103,6 @@ public class Field {
         return cells[x][y]  == 'X';
     }
 
-    public boolean isNumber(int x, int y, boolean isUserCoordinate) {
-        if (isUserCoordinate) {
-            return isNumber(y - 1, x - 1);
-        }
-        return isNumber(x, y);
-    }
-
     public boolean isNumber(int x, int y) {
         return cells[x][y] >= '1' && cells[x][y] <= '8';
     }
@@ -304,18 +297,27 @@ public class Field {
 
     @Override
     public String toString() {
-        StringBuilder result = new StringBuilder(" |123456789|");
-        result.append("\n").append("-|---------|").append("\n");
+        StringBuilder result = new StringBuilder(" |");
+        for (int i = 1; i < SIZE; i++) {
+            result.append(i).append(" ");
+        }
+        result.append(SIZE).append("|").append("\n");
+        result.append("-|");
+        result.append("- ".repeat(SIZE - 1));
+        result.append("-|").append("\n");
         int i = 1;
         for (char[] row: cells) {
             result.append(i).append("|");
             for (char c: row) {
-                result.append(c);
+                result.append(c).append(" ");
             }
+            result.deleteCharAt(result.length() - 1);
             result.append("|").append("\n");
             i++;
         }
-        result.append("-|---------|");
+        result.append("-|");
+        result.append("- ".repeat(SIZE - 1));
+        result.append("-|");
         return result.toString();
     }
 }
