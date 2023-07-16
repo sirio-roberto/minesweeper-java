@@ -1,7 +1,9 @@
 package minesweeper;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 public class Field {
 
@@ -144,8 +146,104 @@ public class Field {
             mineExploded = true;
             copyAllMinesToFogged();
         } else {
-            getFoggedField().cells[x][y] = '/';
+            exploreAndExpand(x, y);
         }
+    }
+
+    private void exploreAndExpand(int x, int y) {
+        Set<String> setCoordinates = new HashSet<>();
+
+        exploreRecursively(x, y, setCoordinates);
+
+        for (String coordinateStr: setCoordinates) {
+            String[] coordinateArray = coordinateStr.split(" ");
+            int i = Integer.parseInt(coordinateArray[0]);
+            int j = Integer.parseInt(coordinateArray[1]);
+            getFoggedField().cells[i][j] = isNumber(i, j) ? cells[i][j] : '/';
+        }
+    }
+
+    private void exploreRecursively(int i, int j, Set<String> setCoordinates) {
+        setCoordinates.add(convertToSetCoordinate(i, j));
+        if (isNumber(i, j)) {
+            return;
+        }
+        // check north
+        if (i > 0) {
+            if (isEmptyOrNumber(i - 1, j) && isUnexplored(i - 1, j)) {
+                String setCoordinate = convertToSetCoordinate(i - 1, j);
+                if (!setCoordinates.contains(setCoordinate)) {
+                    exploreRecursively(i - 1, j, setCoordinates);
+                }
+            }
+            // check northwest
+            if (j > 0 && isEmptyOrNumber(i - 1, j - 1) && isUnexplored(i - 1, j - 1)) {
+                String setCoordinate = convertToSetCoordinate(i - 1, j - 1);
+                if (!setCoordinates.contains(setCoordinate)) {
+                    exploreRecursively(i - 1, j - 1, setCoordinates);
+                }
+            }
+            // check northeast
+            if (j < SIZE - 1 && isEmptyOrNumber(i - 1, j + 1) && isUnexplored(i - 1, j + 1)) {
+                String setCoordinate = convertToSetCoordinate(i - 1, j + 1);
+                if (!setCoordinates.contains(setCoordinate)) {
+                    exploreRecursively(i - 1, j + 1, setCoordinates);
+                }
+            }
+        }
+        // check south
+        if (i < SIZE - 1) {
+            if (isEmptyOrNumber(i + 1, j) && isUnexplored(i + 1, j)){
+                String setCoordinate = convertToSetCoordinate(i + 1, j);
+                if (!setCoordinates.contains(setCoordinate)) {
+                    exploreRecursively(i + 1, j, setCoordinates);
+                }
+            }
+            // check southwest
+            if (j > 0 && isEmptyOrNumber(i + 1, j - 1) && isUnexplored(i + 1, j - 1)) {
+                String setCoordinate = convertToSetCoordinate(i + 1, j - 1);
+                if (!setCoordinates.contains(setCoordinate)) {
+                    exploreRecursively(i + 1, j - 1, setCoordinates);
+                }
+            }
+            // check southeast
+            if (j < SIZE - 1 && isEmptyOrNumber(i + 1, j + 1) && isUnexplored(i + 1, j + 1)) {
+                String setCoordinate = convertToSetCoordinate(i + 1, j + 1);
+                if (!setCoordinates.contains(setCoordinate)) {
+                    exploreRecursively(i + 1, j + 1, setCoordinates);
+                }
+            }
+        }
+        // check west
+        if (j > 0 && isEmptyOrNumber(i, j - 1) && isUnexplored(i, j - 1)) {
+            String setCoordinate = convertToSetCoordinate(i, j - 1);
+            if (!setCoordinates.contains(setCoordinate)) {
+                exploreRecursively(i, j - 1, setCoordinates);
+            }
+        }
+        // check east
+        if (j < SIZE - 1 && isEmptyOrNumber(i, j + 1) && isUnexplored(i, j + 1)) {
+            String setCoordinate = convertToSetCoordinate(i, j + 1);
+            if (!setCoordinates.contains(setCoordinate)) {
+                exploreRecursively(i, j + 1, setCoordinates);
+            }
+        }
+    }
+
+    private boolean isEmptyOrNumber(int i, int j) {
+        return isEmptyCell(i, j) || isNumber(i, j);
+    }
+
+    private boolean isUnexplored(int i, int j) {
+        return getFoggedField().cells[i][j] != '/';
+    }
+
+    private boolean isEmptyCell(int i, int j) {
+        return cells[i][j] == '.';
+    }
+
+    private String convertToSetCoordinate(int x, int y) {
+        return x + " " + y;
     }
 
     private void copyAllMinesToFogged() {
