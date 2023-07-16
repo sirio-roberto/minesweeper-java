@@ -110,6 +110,54 @@ public class Field {
         return cells[x][y]  == 'X';
     }
 
+    public boolean isNumber(int x, int y, boolean isUserCoordinate) {
+        if (isUserCoordinate) {
+            int aux = x;
+            x = y;
+            y = aux;
+            x--;
+            y--;
+        }
+        return cells[x][y] >= '1' && cells[x][y] <= '8';
+    }
+
+    public void markCell(int x, int y, boolean isUserCoordinate) {
+        if (isUserCoordinate) {
+            int aux = x;
+            x = y;
+            y = aux;
+            x--;
+            y--;
+        }
+
+        if (getFoggedField().cells[x][y] == '*') {
+            getFoggedField().cells[x][y] = '.';
+        } else {
+            getFoggedField().cells[x][y] = '*';
+        }
+    }
+
+    public boolean areAllMinesMarked() {
+        int numOfMines = 0;
+        int numOfMarks = 0;
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                if (isMine(i, j) || getFoggedField().isMarked(i, j)) {
+                    if (!isMine(i, j) || !getFoggedField().isMarked(i, j)) {
+                        return false;
+                    }
+                    numOfMines++;
+                    numOfMarks++;
+                }
+            }
+        }
+        return numOfMines == numOfMarks;
+    }
+
+    private boolean isMarked(int i, int j) {
+        return cells[i][j] == '*';
+    }
+
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder(" |123456789|");
