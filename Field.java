@@ -103,28 +103,58 @@ public class Field {
 
     public boolean isNumber(int x, int y, boolean isUserCoordinate) {
         if (isUserCoordinate) {
-            int aux = x;
-            x = y;
-            y = aux;
-            x--;
-            y--;
+            return isNumber(y - 1, x - 1);
         }
+        return isNumber(x, y);
+    }
+
+    public boolean isNumber(int x, int y) {
         return cells[x][y] >= '1' && cells[x][y] <= '8';
     }
 
     public void markCell(int x, int y, boolean isUserCoordinate) {
         if (isUserCoordinate) {
-            int aux = x;
-            x = y;
-            y = aux;
-            x--;
-            y--;
+            markCell(y - 1, x - 1);
         }
+        else {
+            markCell(x, y);
+        }
+    }
 
+    public void markCell(int x, int y) {
         if (getFoggedField().cells[x][y] == '*') {
             getFoggedField().cells[x][y] = '.';
         } else {
             getFoggedField().cells[x][y] = '*';
+        }
+    }
+
+    public void exploreCell(int x, int y, boolean isUserCoordinate) {
+        if (isUserCoordinate) {
+            exploreCell(y - 1, x - 1);
+        } else {
+            exploreCell(x, y);
+        }
+    }
+
+    private void exploreCell(int x, int y) {
+        if (isNumber(x, y)) {
+            getFoggedField().cells[x][y] = cells[x][y];
+        } else if (isMine(x, y)) {
+            mineExploded = true;
+            copyAllMinesToFogged();
+        } else {
+            getFoggedField().cells[x][y] = '/';
+        }
+    }
+
+    private void copyAllMinesToFogged() {
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                if (isMine(i, j)) {
+                    getFoggedField().cells[i][j] = cells[i][j];
+                }
+            }
         }
     }
 

@@ -23,7 +23,7 @@ public class Main {
             System.out.println();
 
             if ("free".equals(action)) {
-
+                field.exploreCell(x, y, true);
             } else {
                 field.markCell(x, y, true);
             }
