@@ -10,9 +10,8 @@ public class Main {
         int numOfMines = Integer.parseInt(scanner.nextLine());
         System.out.println();
 
-        Field field = new Field(9);
-        // TODO: maybe add the mines to the field constructor logic
-        field.addMines(numOfMines);
+        Field field = new Field(9, numOfMines);
+        field.addMines();
         System.out.println(field.getFoggedField());
 
         while (!field.areAllMinesMarked()) {

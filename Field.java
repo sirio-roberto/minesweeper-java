@@ -6,18 +6,21 @@ import java.util.Random;
 public class Field {
 
     private final int SIZE;
+
+    private final int NUM_OF_MINES;
     private final char[][] cells;
 
     private Field foggedField;
 
-    public Field(int size) {
+    public Field(int size, int numOfMines) {
         this.SIZE = size;
+        this.NUM_OF_MINES = numOfMines;
         this.cells = startEmptyField();
     }
 
     public Field getFoggedField() {
         if (foggedField == null) {
-            foggedField = new Field(SIZE);
+            foggedField = new Field(SIZE, NUM_OF_MINES);
         }
         return foggedField;
     }
@@ -30,10 +33,10 @@ public class Field {
         return cells;
     }
 
-    public void addMines(int numOfMines) {
+    public void addMines() {
         Random random = new Random();
         int i = 0;
-        while (i < numOfMines) {
+        while (i < NUM_OF_MINES) {
             int x = random.nextInt(SIZE);
             int y = random.nextInt(SIZE);
             if (cells[x][y] == '.') {
@@ -138,7 +141,6 @@ public class Field {
     }
 
     public boolean areAllMinesMarked() {
-        int numOfMines = 0;
         int numOfMarks = 0;
         for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; j++) {
@@ -146,12 +148,11 @@ public class Field {
                     if (!isMine(i, j) || !getFoggedField().isMarked(i, j)) {
                         return false;
                     }
-                    numOfMines++;
                     numOfMarks++;
                 }
             }
         }
-        return numOfMines == numOfMarks;
+        return NUM_OF_MINES == numOfMarks;
     }
 
     private boolean isMarked(int i, int j) {
