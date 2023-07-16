@@ -89,13 +89,18 @@ public class Field {
 
     @Override
     public String toString() {
-        StringBuilder result = new StringBuilder();
+        StringBuilder result = new StringBuilder(" |123456789|");
+        result.append("\n").append("-|---------|").append("\n");
+        int i = 1;
         for (char[] row: cells) {
+            result.append(i).append("|");
             for (char c: row) {
                 result.append(c);
             }
-            result.append("\n");
+            result.append("|").append("\n");
+            i++;
         }
+        result.append("-|---------|");
         return result.toString();
     }
 }

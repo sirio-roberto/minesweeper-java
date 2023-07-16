@@ -11,6 +11,6 @@ public class Main {
 
         Field field = new Field(9);
         field.addMines(numOfMines);
-        System.out.print(field);
+        System.out.println(field);
     }
 }
