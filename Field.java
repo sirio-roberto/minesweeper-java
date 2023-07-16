@@ -6,11 +6,10 @@ import java.util.Random;
 public class Field {
 
     private final int SIZE;
-
     private final int NUM_OF_MINES;
     private final char[][] cells;
-
     private Field foggedField;
+    private boolean mineExploded = false;
 
     public Field(int size, int numOfMines) {
         this.SIZE = size;
@@ -45,17 +44,6 @@ public class Field {
             }
         }
         addNumberOfMinesAroundCells();
-        replicateCluesToFoggedField();
-    }
-
-    private void replicateCluesToFoggedField() {
-        for (int i = 0; i < SIZE; i++) {
-            for (int j = 0; j < SIZE; j++) {
-                if (!isMine(i, j)) {
-                    getFoggedField().cells[i][j] = cells[i][j];
-                }
-            }
-        }
     }
 
     private void addNumberOfMinesAroundCells() {
@@ -157,6 +145,33 @@ public class Field {
 
     private boolean isMarked(int i, int j) {
         return cells[i][j] == '*';
+    }
+
+    public boolean isGameOver() {
+        if (mineExploded) {
+            System.out.println("You stepped on a mine and failed!");
+            return true;
+        }
+        if (areAllMinesMarked() || areAllCellsExplored()) {
+            System.out.println("Congratulations! You found all the mines!");
+            return true;
+        }
+        return false;
+    }
+
+    private boolean areAllCellsExplored() {
+        int unexploredCells = 0;
+        for (char[] row: getFoggedField().cells) {
+            for (char c: row) {
+                if (c == '*' || c == '.') {
+                    unexploredCells++;
+                    if (unexploredCells > NUM_OF_MINES) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return unexploredCells == NUM_OF_MINES;
     }
 
     @Override
