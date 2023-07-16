@@ -4,14 +4,26 @@ import java.util.Arrays;
 import java.util.Random;
 
 public class Field {
+
+    private final int SIZE;
     private final char[][] cells;
 
+    private Field foggedField;
+
     public Field(int size) {
-        this.cells = startEmptyField(size);
+        this.SIZE = size;
+        this.cells = startEmptyField();
     }
 
-    private char[][] startEmptyField(int size) {
-        char[][] cells = new char[size][size];
+    public Field getFoggedField() {
+        if (foggedField == null) {
+            foggedField = new Field(SIZE);
+        }
+        return foggedField;
+    }
+
+    private char[][] startEmptyField() {
+        char[][] cells = new char[SIZE][SIZE];
         for (char[] row: cells) {
             Arrays.fill(row, '.');
         }
@@ -22,19 +34,30 @@ public class Field {
         Random random = new Random();
         int i = 0;
         while (i < numOfMines) {
-            int x = random.nextInt(cells.length);
-            int y = random.nextInt(cells.length);
+            int x = random.nextInt(SIZE);
+            int y = random.nextInt(SIZE);
             if (cells[x][y] == '.') {
                 cells[x][y] = 'X';
                 i++;
             }
         }
         addNumberOfMinesAroundCells();
+        replicateCluesToFoggedField();
+    }
+
+    private void replicateCluesToFoggedField() {
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                if (!isMine(i, j)) {
+                    getFoggedField().cells[i][j] = cells[i][j];
+                }
+            }
+        }
     }
 
     private void addNumberOfMinesAroundCells() {
-        for (int i = 0; i < cells.length; i++) {
-            for (int j = 0; j < cells.length; j++) {
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
                 // check north
                 if (i > 0) {
                     if (isMine(i - 1, j)) {
@@ -45,12 +68,12 @@ public class Field {
                         addNumber(i, j);
                     }
                     // check northeast
-                    if (j < cells.length - 1 && isMine(i - 1, j + 1)) {
+                    if (j < SIZE - 1 && isMine(i - 1, j + 1)) {
                         addNumber(i, j);
                     }
                 }
                 // check south
-                if (i < cells.length - 1) {
+                if (i < SIZE - 1) {
                     if (isMine(i + 1, j)){
                         addNumber(i, j);
                     }
@@ -59,7 +82,7 @@ public class Field {
                         addNumber(i, j);
                     }
                     // check southeast
-                    if (j < cells.length - 1 && isMine(i + 1, j + 1)) {
+                    if (j < SIZE - 1 && isMine(i + 1, j + 1)) {
                         addNumber(i, j);
                     }
                 }
@@ -68,7 +91,7 @@ public class Field {
                     addNumber(i, j);
                 }
                 // check east
-                if (j < cells.length - 1 && isMine(i, j + 1)) {
+                if (j < SIZE - 1 && isMine(i, j + 1)) {
                     addNumber(i, j);
                 }
             }
