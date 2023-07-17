@@ -4,20 +4,21 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
+        final int side = 9;
         Scanner scanner = new Scanner(System.in);
 
         System.out.print("How many mines do you want on the field? ");
         int numOfMines = Integer.parseInt(scanner.nextLine());
         System.out.println();
 
-        Field field = new Field(9, numOfMines);
+        Field field = new Field(side, numOfMines);
         field.addMines();
         System.out.println(field.getFoggedField());
 
         while (!field.isGameOver()) {
             System.out.print("Set/unset mines marks or claim a cell as free: ");
             String[] userInput = scanner.nextLine().split(" ");
-            if (isInvalidInput(userInput, numOfMines)) {
+            if (isInvalidInput(userInput, side)) {
                 continue;
             }
             int x = Integer.parseInt(userInput[0]);
@@ -35,7 +36,7 @@ public class Main {
         }
     }
 
-    private static boolean isInvalidInput(String[] userInput, int numOfMines) {
+    private static boolean isInvalidInput(String[] userInput, int side) {
         if (userInput.length != 3) {
             System.out.println("User input should contain 3 fields (x, y and action)");
             return true;
@@ -46,7 +47,7 @@ public class Main {
         }
         int x = Integer.parseInt(userInput[0]);
         int y = Integer.parseInt(userInput[1]);
-        if (x < 0 || y < 0 || x > numOfMines || y > numOfMines) {
+        if (x < 1 || y < 1 || x >= side || y >= side) {
             System.out.println("Coordinates should be between allowed range");
             return true;
         }

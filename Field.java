@@ -303,7 +303,7 @@ public class Field {
         }
         result.append(SIZE).append("|").append("\n");
         result.append("-|");
-        result.append("- ".repeat(SIZE - 1));
+        result.append("--".repeat(SIZE - 1));
         result.append("-|").append("\n");
         int i = 1;
         for (char[] row: cells) {
@@ -316,7 +316,7 @@ public class Field {
             i++;
         }
         result.append("-|");
-        result.append("- ".repeat(SIZE - 1));
+        result.append("--".repeat(SIZE - 1));
         result.append("-|");
         return result.toString();
     }
